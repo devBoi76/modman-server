@@ -1,0 +1,9 @@
+{
+    "python.pythonPath": "modman_server/bin/python",
+    "python.linting.mypyEnabled": true,
+    "python.linting.enabled": false,
+    "python.linting.pylintEnabled": false,
+    "python.linting.banditEnabled": false,
+    "python.linting.flake8Enabled": false,
+    "python.linting.prospectorEnabled": false
+}
