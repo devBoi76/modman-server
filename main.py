@@ -59,17 +59,12 @@ def upload_release_file_post(pkg_id, release_id):
     
     file = request.files["file"]
     file.save(f"./assets/{pkg_id}/{release_id}/file.jar")
-    # f = open(f"./assets/{pkg_id}/{release_id}/file.jar", "wb")
-    # f.write(file)
-    # f.close()
 
     return "OK", 200
 
 
 if __name__ == "__main__":
     setup()
-    # package.Package.create_new("JEI", "Just Enough Items")
-    # rel = package.Release.create_new("0.1", "1.16.5", [], 0)
     app.run()
 
 
