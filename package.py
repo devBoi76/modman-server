@@ -72,6 +72,7 @@ class Release:
     deps: list = []
     parent_package_id: int = 1
     released: int = 0
+    downloads: int = 0
 
     def __init__(self, id, version, game_version, deps: list, parent_package_id: int, released=time.time_ns()):
         self.id = id
@@ -125,6 +126,7 @@ class Release:
         j['deps'] = self.deps
         j['parent_package_id'] = self.parent_package_id
         j['released'] = self.released
+        j['downloads'] = self.downloads
         return j
 
 class Dependency:

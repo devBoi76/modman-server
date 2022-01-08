@@ -19,19 +19,30 @@ def setup():
 def hello():
     return "super secret don't look"
 
-@app.route("/download_release/<pkg_id>/<release_id>")
+
+# v1 is used for the normal communication method where the server returns a list of all available packages
+# v2 is the "direct" mode, where the client asks for once specific package
+
+@app.route("/v1/download_release/<pkg_id>/<release_id>")
 def get_file(pkg_id, release_id):
     resp = make_response(send_from_directory(f"./assets/{pkg_id}/{release_id}","file.jar"))
+    f = open("./assets/pkg_index.json")
+    j = json.loads(f.read())
+    j['packages'][int(pkg_id)]['releases'][int(release_id)]['downloads'] += 1
+    f = open("./assets/pkg_index.json", "w")
+    f.write(json.dumps(j))
+    f.close()
+
     return resp
 
-@app.route("/get_available_packages")
+@app.route("/v1/get_available_packages")
 def get_available_packages():
     f = open("./assets/pkg_index.json")
     r = make_response(json.dumps(json.loads(f.read())['packages']))
     r.headers.set("Content-Type", "application/json")
     return r
 
-@app.post("/create_package")
+@app.post("/v1/create_package")
 def create_package_post():
     name = request.form.get("name", None)
     description = request.form.get("description", None);
@@ -41,7 +52,7 @@ def create_package_post():
     package.Package.create_new("Very Cool Mod", "This is a very cool mod")
     return "OK", 200
 
-@app.post("/create_release")
+@app.post("/v1/create_release")
 def create_release_post():
     version = request.form.get("version", None)
     game_version = request.form.get("game_version", None)
@@ -54,7 +65,7 @@ def create_release_post():
     package.Release.create_new(version, game_version, deps, parent_package_id)
     return "OK", 200
 
-@app.post("/upload_release_file/<pkg_id>/<release_id>")
+@app.post("/v1/upload_release_file/<pkg_id>/<release_id>")
 def upload_release_file_post(pkg_id, release_id):
     
     file = request.files["file"]
@@ -65,6 +76,8 @@ def upload_release_file_post(pkg_id, release_id):
 
 if __name__ == "__main__":
     setup()
+    # of2 = package.Package.create_new("OptiFine2", "A performance enchancing mod but better")
+    # package.Release.create_new("HD_U_G9", "1.16.5", [], of2.id)
     app.run()
 
 
